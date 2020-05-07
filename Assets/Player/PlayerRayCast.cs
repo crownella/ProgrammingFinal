@@ -12,12 +12,16 @@ public class PlayerRayCast : MonoBehaviour
 
     public GameObject playerHold;
 
-    bool holdingPackage;
+    GameManager gameManager;
+
+    ToolManager toolManager;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -34,14 +38,32 @@ public class PlayerRayCast : MonoBehaviour
             {
                 if (Input.GetMouseButton(0))
                 {
-                    holdingPackage = true;
-                    hit.transform.GetComponent<Package>().PickUp(playerHold);
-                }
-                else
-                {
-                    if (holdingPackage)
+                    if (!gameManager.holding)
                     {
-                        holdingPackage = false;
+                        gameManager.holding = true;
+                        gameManager.currentPackage = hit.transform.GetComponent<Package>();
+                        gameManager.currentPackage.PickUp(playerHold);
+                    }
+                }
+
+                if (Input.GetMouseButton(1))
+                {
+                    if (gameManager.holding)
+                    {
+                        print("rotate");
+                        gameManager.rotating = true;
+                        hit.transform.GetComponent<Package>().Rotate();
+                    }
+                    else { print("not holding"); }
+                }
+
+                if(!Input.GetMouseButton(0) && !Input.GetMouseButton(1))
+                {
+                    if (gameManager.rotating) gameManager.rotating = false;
+
+                    if (gameManager.holding)
+                    {
+                        gameManager.holding = false;
                         hit.transform.GetComponent<Package>().Drop();
                     }
                 }

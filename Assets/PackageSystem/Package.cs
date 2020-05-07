@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Package : MonoBehaviour
-{
+{ 
     bool holding;
+    bool rotating;
     public float speed = 4f;
+    public float rotSpeed = 5f;
+
+    public Address targetAddress;
 
     Rigidbody rb;
 
@@ -16,7 +20,16 @@ public class Package : MonoBehaviour
 
     private void Update()
     {
-        
+        if (rotating)
+        {
+            float rotX = Input.GetAxis("Mouse X") * rotSpeed * Mathf.Deg2Rad;
+            float rotY = Input.GetAxis("Mouse Y") * rotSpeed * Mathf.Deg2Rad;
+
+            transform.Rotate(Vector3.up, -rotX);
+            transform.Rotate(Vector3.down, -rotX);
+            transform.Rotate(Vector3.left, rotY);
+            transform.Rotate(Vector3.right, -rotY);
+        }
     }
     public void PickUp(GameObject pos)
     {
@@ -39,6 +52,7 @@ public class Package : MonoBehaviour
         {
             print("drop");
             holding = false;
+            rotating = false;
 
             this.transform.SetParent(null);
             rb.useGravity = true;
@@ -46,5 +60,10 @@ public class Package : MonoBehaviour
             rb.constraints = RigidbodyConstraints.None;
         }
         
+    }
+
+    public void Rotate()
+    {
+        rotating = true;
     }
 }
