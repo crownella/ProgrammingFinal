@@ -10,5 +10,5 @@ using UnityEngine;
  [CreateAssetMenu(fileName = "address", menuName = "ScritableObjects/Address", order = 1)]
 public class Address : ScriptableObject
 {
-    string[] addressLines;
+    public string[] addressLines;
 }

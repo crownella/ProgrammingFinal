@@ -11,7 +11,7 @@ public class ToolManager : MonoBehaviour
 {
     public GameObject[] toolPrefabs; //all tools
     public Transform ToolSpawn; //where to spawn the tool
-    public GameObject currentTool; //what tool the player is using
+    public Tool currentTool; //what tool the player is using
 
     int currentToolIndex = 0; //0 is no tool
 
@@ -53,7 +53,7 @@ public class ToolManager : MonoBehaviour
         else if (i - 1 < toolPrefabs.Length)
         {
             if (currentTool != null) Destroy(currentTool);
-            currentTool = Instantiate(toolPrefabs[i - 1], ToolSpawn);
+            currentTool = Instantiate(toolPrefabs[i - 1], ToolSpawn).GetComponent<Tool>();
             currentTool.transform.SetParent(ToolSpawn);
         }
     }

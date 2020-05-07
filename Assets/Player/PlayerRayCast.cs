@@ -22,6 +22,7 @@ public class PlayerRayCast : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        toolManager = GameObject.FindGameObjectWithTag("ToolManager").GetComponent<ToolManager>();
     }
 
     // Update is called once per frame
@@ -34,15 +35,23 @@ public class PlayerRayCast : MonoBehaviour
         if (Physics.Raycast(this.transform.position, this.transform.forward, out hit) && hit.distance < rayLength)
         {
 
+
             if (hit.transform.CompareTag("Package"))
             {
                 if (Input.GetMouseButton(0))
                 {
-                    if (!gameManager.holding)
+                    if (toolManager.currentTool != null)
                     {
-                        gameManager.holding = true;
-                        gameManager.currentPackage = hit.transform.GetComponent<Package>();
-                        gameManager.currentPackage.PickUp(playerHold);
+                        toolManager.currentTool.Action(hit.transform.GetComponent<Package>());
+                    }
+                    else if (toolManager.currentTool == null)
+                    {
+                        if (!gameManager.holding)
+                        {
+                            gameManager.holding = true;
+                            gameManager.currentPackage = hit.transform.GetComponent<Package>();
+                            gameManager.currentPackage.PickUp(playerHold);
+                        }
                     }
                 }
 
@@ -57,7 +66,7 @@ public class PlayerRayCast : MonoBehaviour
                     else { print("not holding"); }
                 }
 
-                if(!Input.GetMouseButton(0) && !Input.GetMouseButton(1))
+                if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1))
                 {
                     if (gameManager.rotating) gameManager.rotating = false;
 
@@ -66,6 +75,13 @@ public class PlayerRayCast : MonoBehaviour
                         gameManager.holding = false;
                         hit.transform.GetComponent<Package>().Drop();
                     }
+                }
+            }
+            else
+            {
+                if (toolManager.currentTool != null)
+                {
+                    toolManager.currentTool.Action();
                 }
             }
 
