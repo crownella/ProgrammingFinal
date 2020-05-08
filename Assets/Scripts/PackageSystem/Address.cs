@@ -11,4 +11,16 @@ using UnityEngine;
 public class Address : ScriptableObject
 {
     public string[] addressLines;
+
+    //to compare two Address objects
+    public bool Equals(Address a)
+    {
+        //evaulate their address lines
+        if (addressLines.Length != a.addressLines.Length) return false;
+        for (int i = 0; i < addressLines.Length; i++)
+        {
+            if (addressLines[i] != a.addressLines[i]) return false;
+        }
+        return true;
+    }
 }

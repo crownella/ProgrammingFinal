@@ -2,20 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * author: Kate Howell
+ * 
+ * this script will be be attatched to a package object and control interaction and delivery
+ */
 public class Package : MonoBehaviour
 { 
     bool holding;
     bool rotating;
+    bool delivered;
     public float speed = 4f;
     public float rotSpeed = 5f;
 
     public Address targetAddress;
 
     Rigidbody rb;
+    Renderer render;
+
+    public Material green;
+    public Material red;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        render = GetComponent<Renderer>();
     }
 
     private void Update()
@@ -33,7 +44,7 @@ public class Package : MonoBehaviour
     }
     public void PickUp(GameObject pos)
     {
-        if (!holding)
+        if (!holding && !delivered)
         {
             print("pick up");
             holding = true;
@@ -48,7 +59,7 @@ public class Package : MonoBehaviour
 
     public void Drop()
     {
-        if (holding)
+        if (holding && !delivered)
         {
             print("drop");
             holding = false;
@@ -65,5 +76,32 @@ public class Package : MonoBehaviour
     public void Rotate()
     {
         rotating = true;
+    }
+
+    //this function takes a bool that stores weather it was a successsful delivery or not
+    public void Delivered(bool success)
+    {
+        if (!delivered)
+        {
+            if (success) SuccessfulDelivery();
+            else FailedDelivery();
+
+            delivered = true;
+        }
+    }
+
+    //if this package was delivered successfully
+    void SuccessfulDelivery()
+    {
+        //change package color
+        render.material = green;
+        GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().points += 1;
+    }
+
+    //if this package failed to deliver
+    void FailedDelivery()
+    {
+        //change package color
+        render.material = red;
     }
 }

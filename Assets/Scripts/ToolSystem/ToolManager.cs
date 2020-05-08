@@ -47,7 +47,7 @@ public class ToolManager : MonoBehaviour
     {
         if (i == 0 && currentTool != null)
         {
-            Destroy(currentTool);
+            Destroy(currentTool.gameObject);
             currentTool = null;
         }
         else if (i - 1 < toolPrefabs.Length)

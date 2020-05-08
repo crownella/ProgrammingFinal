@@ -6,16 +6,16 @@ using System.Text;
 
 public class Scanner : Tool
 {
-    public GameObject addressBoxPrefab;
+
     GameObject addressBox;
     TextMeshProUGUI addressText;
-    Transform addressSpawn;
     Address currentAddress;
     bool showingAddress;
 
     void Awake()
     {
-        addressSpawn = GameObject.FindGameObjectWithTag("AddressSpawn").transform;
+        addressBox = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().addressBox;
+        addressText = addressBox.GetComponentInChildren<TextMeshProUGUI>();
     }
 
 
@@ -35,10 +35,6 @@ public class Scanner : Tool
     {
         showingAddress = true;
 
-        //spawn address box, and get its text componenet
-        addressBox = Instantiate(addressBoxPrefab, addressSpawn);
-        addressText = addressBox.GetComponentInChildren<TextMeshProUGUI>();
-
         //build address string
         StringBuilder stringBuilder = new StringBuilder();
         foreach (string s in currentAddress.addressLines)
@@ -47,6 +43,7 @@ public class Scanner : Tool
         }
 
         //display address text
+        addressBox.SetActive(true);
         addressText.SetText(stringBuilder.ToString());
 
         StartCoroutine(ShowAddressTimer());
@@ -64,7 +61,7 @@ public class Scanner : Tool
     //hide address UI
     void HideAddress()
     {
-        Destroy(addressBox);
+        addressBox.SetActive(false);
     }
 
     //if the rool is switched, get rid of the address box

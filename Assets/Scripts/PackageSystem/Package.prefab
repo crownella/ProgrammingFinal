@@ -109,7 +109,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   rotSpeed: 5
-  targetAddress: {fileID: 11400000, guid: 4d847a178d373b242bf98d1555ad84a4, type: 2}
+  targetAddress: {fileID: 11400000, guid: aa240339aa695bf45893fd3c04bb005b, type: 2}
+  green: {fileID: 2100000, guid: 7e85d52c8d6735745907594fcf8efd66, type: 2}
+  red: {fileID: 2100000, guid: 1672f606e5ab9814e973d5c1c9266603, type: 2}
 --- !u!54 &5457893713787561033
 Rigidbody:
   m_ObjectHideFlags: 0
