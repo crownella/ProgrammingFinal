@@ -9,19 +9,18 @@ using UnityEngine;
  */
 public class Package : MonoBehaviour
 { 
-    bool holding;
-    bool rotating;
-    bool delivered;
-    public float speed = 4f;
-    public float rotSpeed = 5f;
+    bool holding, rotating, delivered, success;
+
+    Toy[] contents; //the toy contents of a package
+    
+    //public float rotSpeed = 5f;
 
     public Address targetAddress;
 
     Rigidbody rb;
     Renderer render;
 
-    public Material green;
-    public Material red;
+    public Material green, red;
 
     private void Awake()
     {
@@ -31,6 +30,7 @@ public class Package : MonoBehaviour
 
     private void Update()
     {
+        /* Couldnt get this working, supposed to rotate when u hold down right button but its rotates on the wrong axis
         if (rotating)
         {
             float rotX = Input.GetAxis("Mouse X") * rotSpeed * Mathf.Deg2Rad;
@@ -41,14 +41,17 @@ public class Package : MonoBehaviour
             transform.Rotate(Vector3.left, rotY);
             transform.Rotate(Vector3.right, -rotY);
         }
+        */
     }
+
+    //pick up a package
     public void PickUp(GameObject pos)
     {
         if (!holding && !delivered)
         {
-            print("pick up");
             holding = true;
 
+            //Set rigid body
             this.transform.SetParent(pos.transform);
             rb.useGravity = false;
             rb.mass = 0;
@@ -57,14 +60,15 @@ public class Package : MonoBehaviour
         }
     }
 
+    //drop a pacakge
     public void Drop()
     {
         if (holding && !delivered)
         {
-            print("drop");
             holding = false;
-            rotating = false;
+            //rotating = false; - not used
 
+            //set rigid body
             this.transform.SetParent(null);
             rb.useGravity = true;
             rb.isKinematic = false;
@@ -73,12 +77,17 @@ public class Package : MonoBehaviour
         
     }
 
+    public void SetAddress(Address a)
+    {
+        targetAddress = a;
+    }
+
     public void Rotate()
     {
         rotating = true;
     }
 
-    //this function takes a bool that stores weather it was a successsful delivery or not
+    //this function takes a bool that stores whether it was a successsful delivery or not
     public void Delivered(bool success)
     {
         if (!delivered)
@@ -86,7 +95,7 @@ public class Package : MonoBehaviour
             if (success) SuccessfulDelivery();
             else FailedDelivery();
 
-            delivered = true;
+            delivered = true; //makes the package not be able to be picked up
         }
     }
 
@@ -96,6 +105,7 @@ public class Package : MonoBehaviour
         //change package color
         render.material = green;
         GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().points += 1;
+        StartCoroutine(Deactivate());
     }
 
     //if this package failed to deliver
@@ -103,5 +113,39 @@ public class Package : MonoBehaviour
     {
         //change package color
         render.material = red;
+        StartCoroutine(Deactivate());
+    }
+
+    //deactivates teh package once its delivered
+    IEnumerator Deactivate()
+    {
+        yield return new WaitForSeconds(1f);
+
+        //add this to the gM to save the delivery details
+        GameManager gM = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        gM.Add(this);
+        gameObject.SetActive(false);
+    }
+
+    public void setContents(Toy[] toys)
+    {
+        contents = toys;
+    }
+
+    public Toy[] getContents()
+    {
+        return contents;
+    }
+
+    //When a package is destroyed, destroy the toys too
+    private void OnDestroy()
+    {
+        if (contents != null)
+        {
+            foreach (Toy t in contents)
+            {
+                if(t != null) Destroy(t.gameObject);
+            }
+        }
     }
 }

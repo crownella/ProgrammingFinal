@@ -7,6 +7,15 @@ TagManager:
   - Package
   - ToolManager
   - AddressSpawn
+  - EmptyPackage
+  - TopFlap
+  - Toy
+  - Cube
+  - SmallCube
+  - MiniCube
+  - Craft
+  - Button
+  - MachineButton
   layers:
   - Default
   - TransparentFX

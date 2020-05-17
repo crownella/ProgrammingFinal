@@ -22,6 +22,15 @@ public class Scanner : Tool
     public override void Action()
     {
         //nothing happens, but this needs to exist
+
+        /* this might seem like a weird thing to do,
+         * but i want to possiblity to add things here later,
+         * and be able to call these functions, knowing they exist
+         */
+    }
+    public override void Action(GameObject g)
+    {
+        //nothing happens, but this needs to exist
     }
 
     public override void Action(Package p)
@@ -37,7 +46,9 @@ public class Scanner : Tool
 
         //build address string
         StringBuilder stringBuilder = new StringBuilder();
-        foreach (string s in currentAddress.addressLines)
+
+        string[] addressLines = currentAddress.getLines();
+        foreach (string s in addressLines)
         {
             stringBuilder.Append(s + "\n");
         }

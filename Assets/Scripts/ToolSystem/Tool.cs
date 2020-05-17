@@ -13,4 +13,6 @@ public abstract class Tool : MonoBehaviour
     abstract public void Action();
     //the tool needs to have what it does when you click on a package
     abstract public void Action(Package p);
+    //the tool needs to have what it does when you a different game object
+    abstract public void Action(GameObject g);
 }

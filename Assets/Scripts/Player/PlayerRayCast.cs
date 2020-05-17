@@ -38,14 +38,18 @@ public class PlayerRayCast : MonoBehaviour
 
             if (hit.transform.CompareTag("Package"))
             {
+                //if you click on a package
                 if (Input.GetMouseButton(0))
                 {
+                    //if you have a tool active, use it
                     if (toolManager.currentTool != null)
                     {
                         toolManager.currentTool.Action(hit.transform.GetComponent<Package>());
                     }
+                    //if not, try to pick it up
                     else if (toolManager.currentTool == null)
                     {
+                        //if you arent currently holding something
                         if (!gameManager.holding)
                         {
                             gameManager.holding = true;
@@ -54,21 +58,20 @@ public class PlayerRayCast : MonoBehaviour
                         }
                     }
                 }
-
-                if (Input.GetMouseButton(1))
+                /*
+                if (Input.GetMouseButton(1)) //ROTATING - removed
                 {
                     if (gameManager.holding)
                     {
-                        print("rotate");
                         gameManager.rotating = true;
                         hit.transform.GetComponent<Package>().Rotate();
                     }
                     else { print("not holding"); }
                 }
-
-                if (!Input.GetMouseButton(0) && !Input.GetMouseButton(1))
+                */
+                else
                 {
-                    if (gameManager.rotating) gameManager.rotating = false;
+                    //if (gameManager.rotating) gameManager.rotating = false; //Rotating - removed
 
                     if (gameManager.holding)
                     {
@@ -77,15 +80,107 @@ public class PlayerRayCast : MonoBehaviour
                     }
                 }
             }
+            else if(hit.transform.CompareTag("Toy"))
+            {
+                //pick up toy
+                if (Input.GetMouseButton(0))
+                {
+                    Toy currentToy = hit.transform.GetComponent<Toy>();
+
+                    //no tools can be used on toys
+                    if (toolManager.currentTool == null)
+                    {
+                        if (!gameManager.holding)
+                        {
+                            gameManager.holding = true;
+                            currentToy.PickUp(playerHold);
+                        }
+                    }
+                }
+                //drop toys
+                else
+                {
+                    if (gameManager.holding)
+                    {
+                        gameManager.holding = false;
+                        hit.transform.GetComponent<Toy>().Drop();
+                    }
+                }
+            }
+            else if (hit.transform.CompareTag("Cube"))
+            {
+                //pick up cube
+                if (Input.GetMouseButton(0))
+                {
+                    Cube currentCube = hit.transform.GetComponent<Cube>();
+
+                    //no tools can be used on cubes
+                    if (toolManager.currentTool == null)
+                    {
+                        if (!gameManager.holding)
+                        {
+                            gameManager.holding = true;
+                            currentCube.PickUp(playerHold);
+                        }
+                    }
+                }
+                //drop cube
+                else
+                {
+                    if (gameManager.holding)
+                    {
+                        gameManager.holding = false;
+                        hit.transform.GetComponent<Cube>().Drop();
+                    }
+                }
+            }
+            //controls button input for switching stations
+            else if (hit.transform.CompareTag("Button"))
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    int currentButton = hit.transform.GetComponent<Button>().buttonInt;
+
+                    if (gameManager.currentStation != (station)currentButton)
+                    {
+                        gameManager.DeactivateButtons();
+                        gameManager.SwitchStation((station)currentButton);
+                        gameManager.Activatebuttons(currentButton);
+                    }
+
+                }    
+            }
+            //controls machine button activate when clicking on a button
+            else if (hit.transform.CompareTag("MachineButton"))
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    hit.transform.GetComponent<MachineButton>().Activate();
+                }
+            }
             else
+            {
+                //if you hit something besides a package
+                if (Input.GetMouseButton(0))
+                {
+                    if (toolManager.currentTool != null)
+                    {
+                        toolManager.currentTool.Action(hit.transform.gameObject);
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            //if you dont hit anything
+            if (Input.GetMouseButton(0))
             {
                 if (toolManager.currentTool != null)
                 {
                     toolManager.currentTool.Action();
                 }
             }
-
-            
         }
 
 

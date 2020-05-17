@@ -9,13 +9,7 @@ using UnityEngine;
  */
 public class DeliveryTrigger : MonoBehaviour
 {
-    public House attachtedHouse;
+   
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Package"))
-        {
-            attachtedHouse.PackageDelivered(other.GetComponent<Package>());
-        }
-    }
+    
 }

@@ -13,14 +13,15 @@ public class ToolManager : MonoBehaviour
     public Transform ToolSpawn; //where to spawn the tool
     public Tool currentTool; //what tool the player is using
 
+    public float scrollSens;
     int currentToolIndex = 0; //0 is no tool
 
     private void Update()
     {
         //Scroll Wheeel Input
         var d = Input.GetAxis("Mouse ScrollWheel");
-        if (d > 0) MoveUp();
-        else if (d < 0) MoveDown();
+        if (d > scrollSens) MoveUp();
+        else if (d < -scrollSens) MoveDown();
     }
 
     //Changes to the tool above this one, with wrapping
@@ -45,14 +46,16 @@ public class ToolManager : MonoBehaviour
     //Changes the tool based on an index
     void ChangeTool(int i)
     {
-        if (i == 0 && currentTool != null)
+        //destroy current tool
+        if (currentTool != null)
         {
             Destroy(currentTool.gameObject);
             currentTool = null;
         }
-        else if (i - 1 < toolPrefabs.Length)
+
+        //spawn new tool
+        if (i - 1 < toolPrefabs.Length && i > 0)
         {
-            if (currentTool != null) Destroy(currentTool);
             currentTool = Instantiate(toolPrefabs[i - 1], ToolSpawn).GetComponent<Tool>();
             currentTool.transform.SetParent(ToolSpawn);
         }
